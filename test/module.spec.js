@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 import { expect } from 'chai'
-const ArbitraryPromise = require('../src/index')
+import ArbitraryPromise from '../src/index'
 
 describe('ArbitraryPromise', () => {
   it('is properly exported', () => {
