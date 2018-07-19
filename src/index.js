@@ -38,18 +38,18 @@ class ArbitraryPromise {
       this[handlerKey] = handler
 
       // Get all data previously called from pass funk
-      this._state[stateKey].forEach(handler)
+      this._state[stateKey].forEach(args => handler(...args))
 
       // return this for chaining
       return this
     }
 
-    this[pass] = (data) => {
+    this[pass] = (...args) => {
       // Save data for future receive assignments to get
-      this._state[stateKey].push(data)
+      this._state[stateKey].push(args)
 
       // Call receive function with data
-      this[handlerKey] && this[handlerKey](data)
+      this[handlerKey] && this[handlerKey](...args)
 
       // return this for chaining
       return this

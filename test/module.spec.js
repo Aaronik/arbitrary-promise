@@ -58,10 +58,19 @@ describe('ArbitraryPromise', () => {
       })
 
       it('allows for chained calls', () => {
-        const data = 'gerald'
+        const data = 'bubblegum'
         const ret = arbitraryPromise[pass](data)
         expect(ret).to.be.an('object')
         expect(ret).to.have.property('clear')
+      })
+
+      it('handles multiple arguments', () => {
+        const data1 = 'herald'
+        const data2 = 'ruth'
+        arbitraryPromise[pass](data1, data2)[receive]((d1, d2) => {
+          expect(d1).to.eq(data1)
+          expect(d2).to.eq(data2)
+        })
       })
     })
 
