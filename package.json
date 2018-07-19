@@ -26,7 +26,7 @@
     "type": "git",
     "url": "https://github.com/aaronik/arbitrary-promise.git"
   },
-  "keywords": [],
+  "keywords": ["promise", "arbitrary", "custom", "custom-promise", "arbitrary-promise", "function", "node", "node.js"],
   "author": {
     "name": "Aaron Sullivan",
     "email": "aasullivan1618@gmail.com",
