@@ -56,6 +56,13 @@ describe('ArbitraryPromise', () => {
         arbitraryPromise[pass](data)
         expect(receivedData).to.eq(data)
       })
+
+      it('allows for chained calls', () => {
+        const data = 'gerald'
+        const ret = arbitraryPromise[pass](data)
+        expect(ret).to.be.an('object')
+        expect(ret).to.have.property('clear')
+      })
     })
 
     describe('before a receive function is given', () => {

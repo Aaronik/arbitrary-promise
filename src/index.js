@@ -39,6 +39,9 @@ class ArbitraryPromise {
 
       // Get all data previously called from pass funk
       this._state[stateKey].forEach(handler)
+
+      // return this for chaining
+      return this
     }
 
     this[pass] = (data) => {
@@ -47,6 +50,9 @@ class ArbitraryPromise {
 
       // Call receive function with data
       this[handlerKey] && this[handlerKey](data)
+
+      // return this for chaining
+      return this
     }
 
   }
