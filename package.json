@@ -1,6 +1,6 @@
 {
   "name": "arbitrary-promise",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ArbitraryPromise is a simple Promise library that allows you to make your own arbitrarily named resolve/then functions.",
   "main": "./lib/index.js",
   "directories": {
