@@ -1,35 +1,111 @@
 /* eslint-env mocha */
-import { expect } from 'chai';
-import { hello, goodbye } from '../src';
+import { expect } from 'chai'
+const ArbitraryPromise = require('../src/index')
 
-describe('arbitrary-promise', () => {
-  describe('hello function', () => {
-    it('Should return a greeting with the name', () => {
-      const expected = 'Hello, Bob!';
-      const actual = hello('Bob');
+describe('ArbitraryPromise', () => {
+  it('is properly exported', () => {
+    expect(ArbitraryPromise).to.be.a('function')
+  })
 
-      expect(actual).to.equal(expected);
-    });
-    it('Should return a default greeting without name', () => {
-      const expected = 'Hello, World!';
-      const actual = hello();
+  it('throws with no input', () => {
+    expect(() => { new ArbitraryPromise() }).to.throw()
+  })
 
-      expect(actual).to.equal(expected);
-    });
-  });
+  it('throws with malformed input', () => {
+    expect(() => { new ArbitraryPromise('bob') }).to.throw()
+    expect(() => { new ArbitraryPromise(['bob']) }).to.throw()
+    expect(() => { new ArbitraryPromise(['bob', 'jim']) }).to.throw()
+  })
 
-  describe('goodbye function', () => {
-    it('Should return a goodbye with the name', () => {
-      const expected = 'Bye Bob.';
-      const actual = goodbye('Bob');
+  describe('when given well formed input', () => {
 
-      expect(actual).to.equal(expected);
-    });
-    it('Should return a default goodbye without name', () => {
-      const expected = 'Bye World.';
-      const actual = goodbye();
+    const pass = 'pass'
+    const receive = 'receive'
+    const passReceivePairs = [[pass, receive]]
 
-      expect(actual).to.equal(expected);
-    });
-  });
-});
+    let arbitraryPromise
+
+    beforeEach(() => {
+      arbitraryPromise = new ArbitraryPromise(passReceivePairs)
+    })
+
+    it('has clear attribute', () => {
+      expect(arbitraryPromise).to.have.property('clear')
+    })
+
+    it('assigns pass/receive methods to prototype', () => {
+      expect(arbitraryPromise).to.have.property(pass)
+      expect(arbitraryPromise).to.have.property(receive)
+    })
+
+    describe('when a receive function is given', () => {
+
+      let receivedData = null
+
+      beforeEach(() => {
+        arbitraryPromise[receive](data => { receivedData = data })
+      })
+
+      afterEach(() => {
+        receivedData = null
+      })
+
+      it('calls it with passed data', () => {
+        const data = 'jim'
+
+        arbitraryPromise[pass](data)
+        expect(receivedData).to.eq(data)
+      })
+    })
+
+    describe('before a receive function is given', () => {
+
+      it('allows pass function to be called', () => {
+        const data = 'fred'
+
+        expect(arbitraryPromise[pass].bind(null, data)).to.not.throw()
+      })
+    })
+
+    describe('when a pass function is called before a receive function', () => {
+
+      const data = 'barney'
+      let receivedData1 = null
+      let receivedData2 = null
+
+      beforeEach(() => {
+        arbitraryPromise[pass](data)
+        arbitraryPromise[receive](data => receivedData1 = data)
+        arbitraryPromise[receive](data => receivedData2 = data)
+      })
+
+      afterEach(() => {
+        receivedData1 = null
+        receivedData2 = null
+      })
+
+      it('calls receive function with previously passed data', () => {
+        expect(receivedData1).to.eq(data)
+      })
+
+      it('calls a second receive function with previously passed data', () => {
+        expect(receivedData2).to.eq(data)
+      })
+
+      describe('and then clear is called', () => {
+
+        let receivedData = null
+
+        beforeEach(() => {
+          arbitraryPromise.clear()
+          arbitraryPromise[receive](data => receivedData = data)
+        })
+
+        it('no longer populates new calls with old data', () => {
+          expect(receivedData).to.eq(null)
+        })
+      })
+    })
+  })
+})
+
