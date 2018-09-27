@@ -123,5 +123,28 @@ describe('ArbitraryPromise', () => {
       })
     })
   })
+
+  describe('when instructed to not save state', () => {
+
+    const pass = 'pass'
+    const receive = 'receive'
+    const passReceivePairs = [[pass, receive]]
+    const promise = new ArbitraryPromise(passReceivePairs, false)
+
+    describe('and given a handler after a call', () => {
+
+      let receivedData
+
+      beforeEach(() => {
+        promise[pass]('data')
+        promise[receive](data => receivedData = data)
+      })
+
+      it('does not populate call', () => {
+        expect(receivedData).to.eq(undefined)
+      })
+    })
+
+  })
 })
 

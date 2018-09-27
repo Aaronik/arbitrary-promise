@@ -47,4 +47,17 @@ promise.onData(console.log)
 
 -> `Whoa! Algebraic!`
 
+Unless, that is, you don't want it to:
+
+```js
+import ArbitraryPromise from 'arbitrary-promise'
+
+const promise = new ArbitraryPromise([['handleData', 'onData']], false)
+
+promise.handleData('Whoa! Algebraic!')
+promise.onData(console.log)
+```
+
+-> Zilch.
+
 Check out [the tests](./test/module.spec.js) for all the info, of which there is not much more than what you already know :)

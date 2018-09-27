@@ -1,11 +1,11 @@
 class ArbitraryPromise {
-  constructor(passReceivePairs) {
+  constructor(passReceivePairs, shouldSaveCalls = true) {
     if (!this._validatePassReceivePairs(passReceivePairs))
       throw new Error("must pass in tuples of function names like [['handleData', 'onData'], ...]")
 
     this._createState()
 
-    passReceivePairs.forEach(this._processPassReceivePair.bind(this))
+    passReceivePairs.forEach(this._processPassReceivePair.bind(this, shouldSaveCalls))
   }
 
   // Remove all state. Useful for applications making heavy repeated use
@@ -14,17 +14,20 @@ class ArbitraryPromise {
     this._resetState()
   }
 
+  // initialize state on prototype
   _createState() {
     this._state = {}
   }
 
+  // free up the state
   _resetState() {
     Object.keys(this._state).forEach(stateKey => {
       this._state[stateKey] = []
     })
   }
 
-  _processPassReceivePair(pair) {
+  // attach the handlers / memory
+  _processPassReceivePair(shouldSaveCalls, pair) {
     const [ pass, receive ] = pair
 
     const stateKey = '__state_' + pass
@@ -38,7 +41,8 @@ class ArbitraryPromise {
       this[handlerKey] = handler
 
       // Get all data previously called from pass funk
-      this._state[stateKey].forEach(args => handler(...args))
+      if (shouldSaveCalls)
+        this._state[stateKey].forEach(args => handler(...args))
 
       // return this for chaining
       return this
@@ -49,7 +53,8 @@ class ArbitraryPromise {
       this._state[stateKey].push(args)
 
       // Call receive function with data
-      this[handlerKey] && this[handlerKey](...args)
+      if (shouldSaveCalls)
+        this[handlerKey] && this[handlerKey](...args)
 
       // return this for chaining
       return this
@@ -57,6 +62,7 @@ class ArbitraryPromise {
 
   }
 
+  // Make sure user has passed in valid pairs
   _validatePassReceivePairs(passReceivePairs) {
     const isArray = Array.isArray(passReceivePairs)
     if (!isArray) return false
